@@ -9,14 +9,16 @@
       :imagePath="album.poster"
       :year="album.year"
     ></MovieCard>
+    <Loader v-if="loading"></Loader>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import MovieCard from "./MovieCard.vue";
+import Loader from "./Loader.vue";
 export default {
-  components: { MovieCard },
+  components: { MovieCard, Loader },
   name: "Shell",
   data() {
     return {
@@ -31,7 +33,9 @@ export default {
       axios.get(this.apiEndpoint).then((resp) => {
         debugger;
         this.albumList = resp.data.response;
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 2000);
       });
     },
   },
