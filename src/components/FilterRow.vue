@@ -5,6 +5,7 @@
       <FilterSelect
         :value="filterObject[i]"
         :selectName="i"
+        :ref="i"
         :valueList="filter"
         @onChange="filterChanged"
       ></FilterSelect>
@@ -36,8 +37,13 @@ export default {
       this.$emit("onFilterChanged", this.filterObject);
     },
     resetFilter() {
+      Object.values(this.$refs).forEach((selectEl) => {
+        // debugger;
+        selectEl[0].resetFilter();
+      });
+
       this.filterObject = {};
-      //   this.$refs.FilterSelect.resetFilter();
+      //   .0.resetFilter();
       this.$emit("onFilterChanged", this.filterObject);
     },
   },
