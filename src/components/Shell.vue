@@ -1,7 +1,7 @@
 <template>
   <div class="shell">
     <FilterRow
-      :filterList="{ genre: genresList, author: artistsList, year: yearsList }"
+      :filterList="filterData"
       @onFilterChanged="onFilterChange"
     ></FilterRow>
     <MovieCard
@@ -32,6 +32,7 @@ export default {
       displayList: [],
       loading: true,
       filterObject: {},
+      keysExcludedList: ["poster"],
     };
   },
   methods: {
@@ -70,35 +71,60 @@ export default {
         }, []);
       }
     },
+    generateUniqueList(key) {
+      return this.albumList.reduce((acc, value) => {
+        if (!acc.includes(value[key])) {
+          //   debugger;
+          acc.push(value[key]);
+        }
+        return acc;
+      }, []);
+    },
   },
   computed: {
-    genresList() {
-      return this.albumList.reduce((acc, value) => {
-        if (!acc.includes(value.genre)) {
-          //   debugger;
-          acc.push(value.genre);
-        }
-        return acc;
-      }, []);
+    filterData() {
+      const dataToReturn = {};
+      if (this.albumList.length > 1)
+        Object.keys(this.albumList[0]).forEach((key) => {
+          if (!this.keysExcludedList.includes(key)) {
+            dataToReturn[key] = this.generateUniqueList(key);
+          }
+        });
+
+      return dataToReturn;
+      //   return {
+      // genre: this.genresList,
+      // author: this.artistsList,
+      // year: this.yearsList,
+      //   };
     },
-    artistsList() {
-      return this.albumList.reduce((acc, value) => {
-        if (!acc.includes(value.author)) {
-          //   debugger;
-          acc.push(value.author);
-        }
-        return acc;
-      }, []);
-    },
-    yearsList() {
-      return this.albumList.reduce((acc, value) => {
-        if (!acc.includes(value.year)) {
-          //   debugger;
-          acc.push(value.year);
-        }
-        return acc;
-      }, []);
-    },
+    // genresList() {
+    //   return this.albumList.reduce((acc, value) => {
+    //     if (!acc.includes(value.genre)) {
+    //       //   debugger;
+    //       acc.push(value.genre);
+    //     }
+    //     return acc;
+    //   }, []);
+    // },
+    // artistsList() {
+    //   return this.albumList.reduce((acc, value) => {
+    //     if (!acc.includes(value.author)) {
+    //       //   debugger;
+    //       acc.push(value.author);
+    //     }
+    //     return acc;
+    //   }, []);
+    // },
+    // yearsList() {
+    //   return this.albumList.reduce((acc, value) => {
+    //     if (!acc.includes(value.year)) {
+    //       //   debugger;
+    //       acc.push(value.year);
+    //     }
+    //     return acc;
+    //   }, []);
+    // },
   },
   mounted() {
     this.fetchData();
